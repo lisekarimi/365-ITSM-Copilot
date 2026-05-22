@@ -1,0 +1,27 @@
+# --- Copilot Studio / Power Platform local binding metadata (env + account specific) ---
+# Ties the export to a specific tenant/environment/account. Local only.
+**/.mcs/
+**/conn.json
+**/changetoken.txt
+**/filechangetrack.json
+
+# --- Secrets / credentials ---
+*.env
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+secrets.*
+**/credentials*.json
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
+*~

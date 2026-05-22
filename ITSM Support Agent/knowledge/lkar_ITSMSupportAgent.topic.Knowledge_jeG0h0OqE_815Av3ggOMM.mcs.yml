@@ -1,0 +1,10 @@
+mcs.metadata:
+  componentName: Knowledge
+  description: "This knowledge source answers questions found in the following ServiceNow items: Knowledge"
+kind: KnowledgeSourceConfiguration
+source:
+  kind: FederatedStructuredSearchSource
+  connectionProperties:
+    mode: Invoker
+
+  skillConfiguration: Knowledge_8GsRCqxuHVqnU_4U469ZR

@@ -1,0 +1,9 @@
+connectionReferences:
+  - connectionReferenceLogicalName: lkar_ITSMSupportAgent.cr.TokjOwm3
+    connectorId: /providers/Microsoft.PowerApps/apis/shared_service-now
+  - connectionReferenceLogicalName: lkar_ITSMSupportAgent.shared_service-now.3a947c498ef149d7a9bd538ef4a89535
+    connectorId: /providers/Microsoft.PowerApps/apis/shared_service-now
+  - connectionReferenceLogicalName: lkar_ITSMSupportAgent.shared_service-now.b756fcf87b744fa4b98e8f0e183d8351
+    connectorId: /providers/Microsoft.PowerApps/apis/shared_service-now
+  - connectionReferenceLogicalName: new_sharedcommondataserviceforapps_d3e9c
+    connectorId: /providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps

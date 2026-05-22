@@ -1,0 +1,376 @@
+mcs.metadata:
+  componentName: Conversation Start
+  description: This system topic triggers when the agent receives an Activity indicating the beginning of a new conversation. If you do not want the agent to initiate the conversation, disable this topic.
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnConversationStart
+  id: main
+  actions:
+    - kind: InvokeConnectorAction
+      id: invokeConnectorAction_MWQEtH
+      displayName: Get ServiceNow Record
+      input:
+        binding:
+          sysparm_limit: 1
+          sysparm_query: ="email="&System.User.PrincipalName
+          tableType: sys_user
+
+      output:
+        kind: SingleVariableOutputBinding
+        variable: Topic.ResultUser
+
+      connectionReference: lkar_ITSMSupportAgent.shared_service-now.3a947c498ef149d7a9bd538ef4a89535
+      connectionProperties:
+        mode: Maker
+
+      dynamicOutputSchema:
+        kind: Record
+        properties:
+          result:
+            order: 0
+            type:
+              kind: Table
+              properties:
+                active:
+                  displayName: Active
+                  description: Inactive users do not show in user choice lists
+                  order: 23
+                  type: String
+
+                avatar:
+                  displayName: Avatar
+                  order: 55
+                  type: String
+
+                building:
+                  displayName: Building
+                  order: 6
+                  type: String
+
+                calendar_integration:
+                  displayName: Calendar integration
+                  order: 0
+                  type: String
+
+                city:
+                  displayName: City
+                  order: 31
+                  type: String
+
+                company:
+                  displayName: Company
+                  order: 44
+                  type: String
+
+                cost_center:
+                  displayName: Cost center
+                  order: 25
+                  type: String
+
+                country:
+                  displayName: Country code
+                  order: 1
+                  type: String
+
+                date_format:
+                  displayName: Date format
+                  description: Display dates with this format (blank means system default)
+                  order: 60
+                  type: String
+
+                default_perspective:
+                  displayName: Default perspective
+                  order: 22
+                  type: String
+
+                department:
+                  displayName: Department
+                  order: 45
+                  type: String
+
+                email:
+                  displayName: Email
+                  order: 47
+                  type: String
+
+                employee_number:
+                  displayName: Employee number
+                  order: 28
+                  type: String
+
+                enable_multifactor_authn:
+                  displayName: Enable Multifactor Authentication
+                  order: 9
+                  type: String
+
+                failed_attempts:
+                  displayName: Failed login attempts
+                  order: 32
+                  type: String
+
+                fax:
+                  displayName: Fax
+                  order: 14
+                  type: String
+
+                federated_id:
+                  displayName: Federated ID
+                  order: 39
+                  type: String
+
+                first_name:
+                  displayName: First name
+                  order: 46
+                  type: String
+
+                gender:
+                  displayName: Gender
+                  order: 30
+                  type: String
+
+                home_phone:
+                  displayName: Home phone
+                  order: 19
+                  type: String
+
+                identity_type:
+                  displayName: Identity type
+                  order: 15
+                  type: String
+
+                internal_integration_user:
+                  displayName: Internal Integration User
+                  order: 40
+                  type: String
+
+                introduction:
+                  displayName: Prefix
+                  order: 48
+                  type: String
+
+                last_login:
+                  displayName: Last login
+                  order: 21
+                  type: String
+
+                last_login_time:
+                  displayName: Last login time
+                  order: 3
+                  type: String
+
+                last_name:
+                  displayName: Last name
+                  order: 53
+                  type: String
+
+                ldap_server:
+                  displayName: LDAP server
+                  order: 41
+                  type: String
+
+                location:
+                  displayName: Location
+                  order: 61
+                  type: String
+
+                locked_out:
+                  displayName: Locked out
+                  description: When checked, user cannot login
+                  order: 51
+                  type: String
+
+                manager:
+                  displayName: Manager
+                  order: 50
+                  type: String
+
+                manager_hp1:
+                  displayName: Manager HP1
+                  order: 35
+                  type: String
+
+                middle_name:
+                  displayName: Middle name
+                  order: 56
+                  type: String
+
+                mobile_phone:
+                  displayName: Mobile phone
+                  order: 42
+                  type: String
+
+                name:
+                  displayName: Name
+                  order: 27
+                  type: String
+
+                notification:
+                  displayName: Notification
+                  description: Enable or disable notifications for this user ie. email, SMS etc
+                  order: 8
+                  type: String
+
+                password_needs_reset:
+                  displayName: Password needs reset
+                  description: User will be prompted to change password at next login
+                  order: 29
+                  type: String
+
+                phone:
+                  displayName: Business phone
+                  order: 26
+                  type: String
+
+                photo:
+                  displayName: Photo
+                  order: 54
+                  type: String
+
+                preferred_language:
+                  displayName: Language
+                  order: 49
+                  type: String
+
+                roles:
+                  displayName: Roles
+                  order: 34
+                  type: String
+
+                schedule:
+                  displayName: Schedule
+                  order: 59
+                  type: String
+
+                source:
+                  displayName: Source
+                  order: 4
+                  type: String
+
+                state:
+                  displayName: State / Province
+                  order: 13
+                  type: String
+
+                street:
+                  displayName: Street
+                  order: 43
+                  type: String
+
+                sys_class_name:
+                  displayName: Class
+                  order: 37
+                  type: String
+
+                sys_created_by:
+                  displayName: Created by
+                  order: 17
+                  type: String
+
+                sys_created_on:
+                  displayName: Created
+                  order: 11
+                  type: String
+
+                sys_domain:
+                  displayName: Domain
+                  description: Domain to which the user belongs
+                  order: 12
+                  type: String
+
+                sys_domain_path:
+                  displayName: Domain Path
+                  order: 24
+                  type: String
+
+                sys_id:
+                  displayName: Sys ID
+                  order: 38
+                  type: String
+
+                sys_mod_count:
+                  displayName: Updates
+                  order: 52
+                  type: String
+
+                sys_tags:
+                  displayName: Tags
+                  order: 57
+                  type: String
+
+                sys_updated_by:
+                  displayName: Updated by
+                  order: 10
+                  type: String
+
+                sys_updated_on:
+                  displayName: Updated
+                  order: 5
+                  type: String
+
+                time_format:
+                  displayName: Time format
+                  description: Display times with this format (blank means system default)
+                  order: 20
+                  type: String
+
+                time_zone:
+                  displayName: Time zone
+                  order: 58
+                  type: String
+
+                title:
+                  displayName: Title
+                  order: 36
+                  type: String
+
+                user_name:
+                  displayName: User ID
+                  order: 33
+                  type: String
+
+                user_password:
+                  displayName: Password
+                  order: 2
+                  type: String
+
+                vip:
+                  displayName: VIP
+                  order: 16
+                  type: String
+
+                web_service_access_only:
+                  displayName: Web service access only
+                  description: Prevent user from accessing UI, and require a SOAP role to make API protocol calls (such as SOAP and WSDL requests)
+                  order: 7
+                  type: String
+
+                zip:
+                  displayName: Zip / Postal code
+                  order: 18
+                  type: String
+
+      operationId: GetRecords
+
+    - kind: SetVariable
+      id: setVariable_Miaavr
+      displayName: Set Email to String
+      variable: Global.UserSysId
+      value: =First(Topic.ResultUser.result).sys_id
+
+    - kind: SendActivity
+      id: sendMessage_M0LuhV
+      activity:
+        text:
+          - |-
+            👋 Hello {System.User.FirstName}! I'm {System.Bot.Name}, your IT Service Desk assistant powered by ServiceNow.
+
+
+            I can help you with:
+            - 🔍 Troubleshooting IT issues
+            - 🎫 Creating support tickets
+            - 📋 Viewing your recent tickets
+
+
+            How can I help you today?
+        speak:
+          - Hello and thank you for calling {System.Bot.Name}, powered by generative AI. How may I help you today?

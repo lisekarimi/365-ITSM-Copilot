@@ -1,0 +1,31 @@
+mcs.metadata:
+  componentName: Create ServiceNow Ticket
+kind: AdaptiveDialog
+modelDescription: Handles escalation and creation of ServiceNow incident tickets when the IT issue could not be resolved through the knowledge base.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_rmldUz
+      input:
+        binding:
+          text: =Global.UserIssueDescription
+          text_1: =Global.UserSysId
+
+      output:
+        binding:
+          incidentnumber: Topic.IncidentNumber
+
+      flowId: 3ec05db2-fc55-f111-a825-7ced8d8399ab
+
+    - kind: SendActivity
+      id: sendActivity_miOZRN
+      activity: |-
+        Your IT support request  Number  {Topic.IncidentNumber} has been created. The Support team will follow up shortly.
+
+        Is there anything else you need help with?
+
+inputType: {}
+outputType: {}

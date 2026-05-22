@@ -1,0 +1,147 @@
+﻿{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_d3e9c"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_service-now": {
+        "api": {
+          "name": "shared_service-now"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "lkar_ITSMSupportAgent.cr.TokjOwm3"
+        },
+        "runtimeSource": "invoker"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "UserIssueDescription",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "UserSysId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_the_agent": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "incidentnumber": {
+                  "title": "IncidentNumber",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "incidentnumber": "@{outputs(\u0027Create_Ticket\u0027)?[\u0027body/result/number\u0027]}"
+            }
+          },
+          "runAfter": {
+            "Create_Ticket": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "Run_a_prompt": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "recordId": "2f832717-0e9a-4e89-98be-36bdff5d8217",
+              "item/requestv2/UserIssueDescription": "@triggerBody()?[\u0027text\u0027]"
+            },
+            "host": {
+              "apiId": "providers/Microsoft.ProcessSimple/operationGroups/aibuilder",
+              "operationId": "aibuilderpredict_customprompt",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Create_Ticket": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "tableType": "incident",
+              "sysparm_display_value": false,
+              "sysparm_exclude_reference_link": true,
+              "body/caller_id": "@triggerBody()?[\u0027text_1\u0027]",
+              "body/short_description": "@outputs(\u0027Run_a_prompt\u0027)?[\u0027body/responsev2/predictionOutput/structuredOutput/short_description\u0027]",
+              "body/description": "@outputs(\u0027Run_a_prompt\u0027)?[\u0027body/responsev2/predictionOutput/structuredOutput/description\u0027]",
+              "body/urgency": "@outputs(\u0027Run_a_prompt\u0027)?[\u0027body/responsev2/predictionOutput/structuredOutput/urgency\u0027]",
+              "body/category": "@outputs(\u0027Run_a_prompt\u0027)?[\u0027body/responsev2/predictionOutput/structuredOutput/category\u0027]"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_service-now",
+              "operationId": "CreateRecord",
+              "connectionName": "shared_service-now"
+            }
+          },
+          "runAfter": {
+            "Run_a_prompt": [
+              "Succeeded"
+            ]
+          }
+        }
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

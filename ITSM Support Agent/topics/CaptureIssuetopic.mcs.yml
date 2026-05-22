@@ -1,0 +1,16 @@
+mcs.metadata:
+  componentName: Capture Issue topic
+kind: AdaptiveDialog
+modelDescription: Capture the user's initial problem description and store it for later use in support workflows.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: SetVariable
+      id: setVariable_gl0ERa
+      variable: Global.UserIssueDescription
+      value: =System.Activity.Text
+
+inputType: {}
+outputType: {}
