@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>365 ITSM Copilot — AI IT Service Desk · Copilot Studio × ServiceNow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>" />
+<meta name="description" content="An enterprise IT Service Desk agent built in Microsoft Copilot Studio and grounded in ServiceNow: KB-grounded troubleshooting, automated incident creation, and real-time ticket tracking — inside Microsoft Teams." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --blue:#0a6cf0;
+    --blue-2:#0050c8;
+    --teal:#0c8f96;
+    --violet:#5b5fc7;
+    --ink:#0e1320;
+    --ink-2:#3a4256;
+    --muted:#6b7280;
+    --line:#e7ebf3;
+    --line-2:#eef2f9;
+    --bg:#f6f8fc;
+    --card:#ffffff;
+    --r:16px;
+    --r-sm:11px;
+    --grad:linear-gradient(120deg,#0a6cf0 0%,#0c8f96 55%,#5b5fc7 100%);
+    --grad-soft:linear-gradient(120deg,#e8f1ff 0%,#e3f6f5 55%,#eceaff 100%);
+    --sh:0 2px 6px rgba(16,28,60,.06),0 1px 2px rgba(16,28,60,.04);
+    --sh-md:0 12px 30px rgba(16,28,60,.10),0 4px 10px rgba(16,28,60,.05);
+    --sh-lg:0 30px 70px rgba(16,28,60,.16),0 10px 24px rgba(16,28,60,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .section{padding:96px 0}
+  h2{font-size:clamp(1.8rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.025em;margin:0 0 14px;line-height:1.12}
+  h3{font-size:1.06rem;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.74rem;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--grad);border-radius:2px}
+  .lead{color:var(--ink-2);font-size:1.12rem;max-width:680px;margin:0}
+  .center{text-align:center}
+  .center .eyebrow{justify-content:center}
+  .center .lead{margin:0 auto}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* topbar */
+  .topbar{position:sticky;top:0;z-index:60;background:rgba(246,248,252,.72);
+    backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:18px;height:62px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.02em}
+  .logo{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;
+    color:#fff;font-size:.92rem;font-weight:800;box-shadow:var(--sh)}
+  .navlinks{margin-left:auto;display:flex;align-items:center;gap:26px;font-size:.92rem}
+  .navlinks a{color:var(--ink-2);font-weight:500}
+  .navlinks a:hover{color:var(--ink);text-decoration:none}
+  .nav-cta{padding:8px 16px;border-radius:9px;background:var(--ink);color:#fff!important;font-weight:600}
+  .nav-cta:hover{background:#000;text-decoration:none}
+  @media(max-width:760px){.navlinks a:not(.nav-cta){display:none}}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:-30% -10% auto -10%;height:780px;z-index:0;
+    background:
+      radial-gradient(620px 380px at 12% 8%,rgba(10,108,240,.18),transparent 60%),
+      radial-gradient(560px 420px at 88% 0%,rgba(91,95,199,.18),transparent 60%),
+      radial-gradient(700px 480px at 60% 30%,rgba(12,143,150,.14),transparent 62%);
+    filter:blur(8px)}
+  .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;
+    align-items:center;padding-top:84px;padding-bottom:96px}
+  @media(max-width:920px){.hero .wrap{grid-template-columns:1fr;gap:44px;padding-top:60px;padding-bottom:72px}}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .tag{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.8);border:1px solid var(--line);
+    padding:6px 13px;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--ink-2);box-shadow:var(--sh)}
+  .tag .d{width:7px;height:7px;border-radius:50%;background:var(--grad)}
+  h1{font-size:clamp(2.3rem,5.2vw,3.5rem);font-weight:800;letter-spacing:-.035em;line-height:1.05;margin:0 0 18px}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.sub{font-size:1.18rem;color:var(--ink-2);max-width:560px;margin:0 0 30px}
+  .btnrow{display:flex;flex-wrap:wrap;gap:13px;margin-bottom:32px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:11px;font-size:.96rem;
+    font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink);box-shadow:var(--sh);
+    transition:transform .16s,box-shadow .16s;cursor:pointer}
+  .btn:hover{transform:translateY(-2px);box-shadow:var(--sh-md);text-decoration:none}
+  .btn.primary{background:var(--grad);border:none;color:#fff;box-shadow:0 10px 24px rgba(10,108,240,.32)}
+  .btn.primary:hover{box-shadow:0 16px 34px rgba(10,108,240,.42)}
+  .heroquote{display:flex;gap:22px;flex-wrap:wrap}
+  .heroquote .q .n{font-size:1.55rem;font-weight:800;letter-spacing:-.02em;background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+  .heroquote .q .l{font-size:.82rem;color:var(--muted);margin-top:3px}
+
+  /* chat mockup */
+  .mock{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh-lg);overflow:hidden;
+    transform:perspective(1600px) rotateY(-7deg) rotateX(2deg);transition:transform .5s}
+  .mock:hover{transform:perspective(1600px) rotateY(0) rotateX(0)}
+  @media(max-width:920px){.mock{transform:none}}
+  .mock-bar{display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(90deg,#f5f8ff,#fff);
+    border-bottom:1px solid var(--line-2)}
+  .mock-bar .av{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:.9rem}
+  .mock-bar .nm{font-weight:700;font-size:.92rem;line-height:1.15}
+  .mock-bar .st{font-size:.74rem;color:#15a34a;display:flex;align-items:center;gap:5px}
+  .mock-bar .st::before{content:"";width:7px;height:7px;border-radius:50%;background:#15a34a}
+  .mock-bar .tag-ms{margin-left:auto;font-size:.66rem;font-weight:700;color:var(--violet);
+    background:#eceaff;padding:4px 9px;border-radius:6px;letter-spacing:.04em}
+  .mock-body{padding:18px 16px;display:flex;flex-direction:column;gap:12px;background:#fbfcfe}
+  .msg{max-width:84%;padding:11px 14px;border-radius:14px;font-size:.9rem;line-height:1.45;box-shadow:var(--sh)}
+  .msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--line-2);border-bottom-left-radius:5px}
+  .msg.user{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:5px;box-shadow:0 6px 16px rgba(10,108,240,.25)}
+  .msg .cite{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-size:.74rem;font-weight:600;color:var(--teal);
+    background:#e3f6f5;padding:4px 9px;border-radius:7px}
+  .msg .inc{display:inline-flex;align-items:center;gap:7px;margin-top:9px;font-size:.78rem;font-weight:700;color:var(--blue-2);
+    background:#e8f1ff;padding:6px 11px;border-radius:8px;font-family:"Inter",monospace}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:13px 15px;background:#fff;border:1px solid var(--line-2);
+    border-radius:14px;border-bottom-left-radius:5px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#c2cad8;animation:bounce 1.3s infinite}
+  .typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+
+  /* logo strip */
+  .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}
+  .strip .wrap{padding:26px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+  .strip .lbl{font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+  .ms{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem;color:var(--ink-2);
+    padding:7px 13px;border-radius:9px;border:1px solid var(--line-2);background:#fbfcff}
+  .ms .sq{width:16px;height:16px;border-radius:4px;background:var(--grad)}
+
+  /* grids */
+  .grid{display:grid;gap:20px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--sh);
+    transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
+  .card .ico{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;margin-bottom:16px;
+    background:var(--grad-soft);border:1px solid var(--line-2)}
+  .card p{color:var(--muted);margin:0;font-size:.95rem}
+  .card code{background:#f0f3fa;padding:1px 6px;border-radius:5px;font-size:.85em;color:var(--ink-2)}
+
+  /* feature stack chips */
+  .stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:900px){.stack-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.stack-grid{grid-template-columns:1fr}}
+  .scard{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);padding:18px;box-shadow:var(--sh);
+    transition:transform .16s,box-shadow .16s}
+  .scard:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+  .scard .bd{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800;
+    font-size:.8rem;margin-bottom:11px}
+  .scard h3{font-size:.94rem;margin:0 0 3px}
+  .scard small{color:var(--muted);font-size:.83rem;line-height:1.4;display:block}
+
+  /* diagram */
+  .panel{background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid var(--line);border-radius:var(--r);
+    padding:36px 28px;box-shadow:var(--sh-md);overflow-x:auto}
+  .flow{display:flex;flex-direction:column;align-items:center;min-width:560px}
+  .node{border-radius:11px;padding:13px 20px;font-weight:700;font-size:.92rem;text-align:center;background:#fff;
+    box-shadow:var(--sh);border:1.5px solid transparent}
+  .node small{display:block;font-weight:500;font-size:.78rem;color:var(--muted);margin-top:3px}
+  .node.start{background:var(--violet);color:#fff}
+  .node.proc{background:var(--teal);color:#fff}
+  .node.proc small{color:rgba(255,255,255,.85)}
+  .node.orch{background:var(--grad);color:#fff;border-radius:999px;padding:12px 28px;box-shadow:0 8px 20px rgba(10,108,240,.28)}
+  .node.leaf{background:#fff;border-color:#cfeae9;color:var(--ink)}
+  .arrow{width:2px;height:26px;background:linear-gradient(var(--line),#cfd6e6);position:relative}
+  .arrow::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #cfd6e6}
+  .branch{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+  .branch .node{flex:1 1 150px;max-width:210px}
+  .branch3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:100%}
+  .fork{position:relative;width:100%;height:30px}
+  .fork span{position:absolute;background:#cfd6e6}
+  .fork .fv{left:50%;top:0;width:2px;height:15px;transform:translateX(-50%)}
+  .fork .fh{left:16.66%;right:16.66%;top:15px;height:2px}
+  .fork .fd{top:15px;width:2px;height:15px;transform:translateX(-50%)}
+  .fork .fd::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+    border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #cfd6e6}
+
+  /* architecture */
+  .arch{display:flex;align-items:stretch;min-width:780px}
+  .arch .col{display:flex;flex-direction:column;justify-content:center;gap:14px}
+  .arch .zone{border:1.5px dashed #cdd6e8;border-radius:14px;padding:20px;background:#fcfdff;display:flex;flex-direction:column;gap:13px}
+  .arch .ztitle{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .box{border-radius:10px;padding:12px 16px;font-weight:700;font-size:.88rem;color:#fff;text-align:center;box-shadow:var(--sh)}
+  .box.user{background:var(--violet)}
+  .box.green{background:var(--teal)}
+  .box.conn{background:var(--grad);clip-path:polygon(11% 0,89% 0,100% 50%,89% 100%,11% 100%,0 50%);padding:15px 30px}
+  .box.db{background:var(--blue);border-radius:10px 10px 20px 20px}
+  .arch .link{display:flex;align-items:center;justify-content:center;padding:0 8px;color:#c2cad8;font-size:1.6rem}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;font-size:.82rem;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:13px;height:13px;border-radius:4px}
+
+  /* steps */
+  .steps{counter-reset:s;display:grid;gap:14px}
+  .step{display:flex;gap:17px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);
+    padding:18px 20px;box-shadow:var(--sh);transition:transform .16s,box-shadow .16s}
+  .step:hover{transform:translateX(4px);box-shadow:var(--sh-md)}
+  .step::before{counter-increment:s;content:counter(s);flex:0 0 auto;width:34px;height:34px;border-radius:10px;
+    background:var(--grad);color:#fff;font-weight:800;display:grid;place-items:center;font-size:.95rem;box-shadow:var(--sh)}
+  .step p{margin:0;color:var(--ink-2);font-size:.96rem}
+  .step b{color:var(--ink)}
+  .step code{background:#f0f3fa;padding:1px 6px;border-radius:5px;font-size:.85em}
+
+  /* callout */
+  .callout{background:var(--grad-soft);border:1px solid var(--line);border-radius:var(--r);padding:24px 26px;
+    display:flex;gap:16px;align-items:flex-start}
+  .callout .ico{font-size:1.5rem}
+  .callout p{margin:0;color:var(--ink-2);font-size:.97rem}
+
+  /* kpi */
+  .kpi{text-align:center}
+  .kpi .ico{margin:0 auto 14px}
+
+  /* pipeline */
+  .pipeline{display:flex;align-items:center;flex-wrap:wrap}
+  .env{flex:1 1 160px;text-align:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);
+    padding:22px;box-shadow:var(--sh);transition:transform .16s,box-shadow .16s}
+  .env:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+  .env .name{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .env small{color:var(--muted);font-size:.82rem}
+  .parrow{flex:0 0 auto;color:#c2cad8;font-size:1.5rem;padding:0 14px}
+  @media(max-width:560px){.parrow{transform:rotate(90deg);width:100%;padding:8px 0}}
+
+  /* cta band */
+  .cta{position:relative;border-radius:24px;overflow:hidden;background:var(--grad);color:#fff;
+    padding:64px 40px;text-align:center;box-shadow:var(--sh-lg)}
+  .cta::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(400px 200px at 20% 0%,rgba(255,255,255,.22),transparent 60%),
+    radial-gradient(400px 200px at 90% 100%,rgba(255,255,255,.16),transparent 60%)}
+  .cta h2,.cta p{position:relative;z-index:1;color:#fff}
+  .cta p{max-width:560px;margin:10px auto 28px;opacity:.92;font-size:1.08rem}
+  .cta .btnrow{justify-content:center;margin:0;position:relative;z-index:1}
+  .cta .btn{background:#fff;color:var(--ink);border:none}
+  .cta .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(6px)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:48px 0 56px;background:#fff}
+  footer .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;align-items:flex-start}
+  footer .brand{margin-bottom:8px}
+  footer .desc{color:var(--muted);font-size:.9rem;max-width:340px}
+  footer .cols{display:flex;gap:56px;flex-wrap:wrap}
+  footer .col h4{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700}
+  footer .col a{display:block;color:var(--ink-2);font-size:.92rem;margin-bottom:9px;font-weight:500}
+  /* portfolio CTA button */
+  .pfbtn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:14px;
+    font-weight:700;font-size:.98rem;color:#fff!important;background:var(--grad);background-size:200% 100%;
+    box-shadow:0 12px 30px rgba(10,108,240,.32);position:relative;overflow:hidden;text-decoration:none!important;
+    transition:transform .2s,box-shadow .2s,background-position .6s;animation:pfpulse 3.4s ease-in-out infinite}
+  .pfbtn:hover{transform:translateY(-3px);background-position:100% 0;box-shadow:0 18px 42px rgba(10,108,240,.46)}
+  .pfbtn .arw{transition:transform .25s}
+  .pfbtn:hover .arw{transform:translateX(5px)}
+  .pfbtn::before{content:"";position:absolute;top:0;left:-120%;width:55%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);
+    transform:skewX(-18deg);animation:pfshine 3.4s ease-in-out infinite}
+  @keyframes pfshine{0%,55%{left:-120%}80%,100%{left:160%}}
+  @keyframes pfpulse{0%,100%{box-shadow:0 12px 30px rgba(10,108,240,.30)}50%{box-shadow:0 14px 38px rgba(91,95,199,.42)}}
+  .pfsub{display:block;margin-top:12px;color:var(--muted);font-size:.86rem}
+  .pfsub a{display:inline}
+  footer .legal{margin-top:36px;padding-top:22px;border-top:1px solid var(--line-2);color:var(--muted);font-size:.84rem;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="logo">365</span> ITSM Copilot</div>
+    <nav class="navlinks">
+      <a href="#how">What it does</a>
+      <a href="#agentic">How it works</a>
+      <a href="#stack">Microsoft 365</a>
+      <a href="#architecture">Architecture</a>
+      <a class="nav-cta" href="https://github.com/lisekarimi/365-ITSM-Copilot" target="_blank" rel="noopener">View on GitHub</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="badge-row">
+        <span class="tag"><span class="d"></span>Microsoft Copilot Studio</span>
+        <span class="tag"><span class="d"></span>ServiceNow</span>
+        <span class="tag"><span class="d"></span>Agentic AI</span>
+      </div>
+      <h1>The AI service desk that lives <span class="grad-text">inside Microsoft Teams</span>.</h1>
+      <p class="sub">An enterprise IT support agent that troubleshoots from your knowledge base, files structured tickets automatically, and tracks them in real time — no portal, no waiting.</p>
+      <div class="btnrow">
+        <a class="btn primary" href="https://github.com/lisekarimi/365-ITSM-Copilot" target="_blank" rel="noopener">⌥ Explore the build</a>
+        <a class="btn" href="#architecture">See how it works</a>
+      </div>
+      <div class="heroquote">
+        <div class="q"><div class="n">3</div><div class="l">Skills, one agent</div></div>
+        <div class="q"><div class="n">100%</div><div class="l">KB-grounded answers</div></div>
+        <div class="q"><div class="n">0</div><div class="l">Manual ticket logging</div></div>
+      </div>
+    </div>
+
+    <!-- agent chat mockup -->
+    <div class="mock reveal">
+      <div class="mock-bar">
+        <span class="av">IT</span>
+        <div>
+          <div class="nm">ITSM Support Agent</div>
+          <div class="st">Online · powered by GenAI</div>
+        </div>
+        <span class="tag-ms">MS TEAMS</span>
+      </div>
+      <div class="mock-body">
+        <div class="msg bot">👋 Hi Lise! I can troubleshoot IT issues, open tickets, and check your recent ones. What's up?</div>
+        <div class="msg user">My VPN won't connect after the update.</div>
+        <div class="msg bot">Let's fix that. Reset the VPN client cache, then re-authenticate with your Entra credentials — that clears most post-update failures.
+          <span class="cite">📄 ServiceNow KB · grounded</span></div>
+        <div class="msg user">Still failing.</div>
+        <div class="msg bot">No problem — I've raised a ticket for you.
+          <span class="inc">🎫 INC0010042 · created</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- LOGO STRIP -->
+<div class="strip">
+  <div class="wrap">
+    <span class="lbl">Built on</span>
+    <span class="ms"><span class="sq"></span>Copilot Studio</span>
+    <span class="ms"><span class="sq"></span>Power Automate</span>
+    <span class="ms"><span class="sq"></span>AI Builder</span>
+    <span class="ms"><span class="sq"></span>Dataverse</span>
+    <span class="ms"><span class="sq"></span>Entra ID</span>
+    <span class="ms"><span class="sq"></span>Teams</span>
+    <span class="ms"><span class="sq"></span>App Insights</span>
+    <span class="ms"><span class="sq"></span>Power BI</span>
+    <span class="ms"><span class="sq" style="background:#293e40"></span>ServiceNow API</span>
+    <span class="ms"><span class="sq" style="background:#e6a200"></span>OAuth2 connector</span>
+  </div>
+</div>
+
+<!-- WHAT IT DOES -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:46px">
+      <span class="eyebrow">What it does</span>
+      <h2>Three skills, one chat</h2>
+      <p class="lead">The agent understands your request and handles it in one conversation.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card reveal">
+        <div class="ico">🔍</div>
+        <h3>Solve it</h3>
+        <p>Answers your IT question using the company's approved knowledge base — with the source, so every answer is trustworthy.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico">🎫</div>
+        <h3>Raise a ticket</h3>
+        <p>If it can't fix the issue, it opens a support ticket for you automatically and hands back the ticket number on the spot.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico">📋</div>
+        <h3>Check status</h3>
+        <p>Shows you your most recent support tickets whenever you ask — no portal, no digging.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENTIC AI -->
+<section class="section" id="agentic" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:44px">
+      <span class="eyebrow">How it works</span>
+      <h2>One smart agent that picks the right action</h2>
+      <p class="lead">No menus to click through. The AI reads what you're asking and routes you to the right step — answer, ticket, or status — all in one chat.</p>
+    </div>
+
+    <div class="panel reveal">
+      <div class="flow">
+        <div class="node start">You start a chat</div>
+        <div class="arrow"></div>
+        <div class="node proc">It knows who you are<small>signs you in automatically</small></div>
+        <div class="arrow"></div>
+        <div class="node orch">⚙ AI routes your request to the right skill</div>
+        <div class="fork"><span class="fv"></span><span class="fh"></span><span class="fd" style="left:16.66%"></span><span class="fd" style="left:50%"></span><span class="fd" style="left:83.33%"></span></div>
+        <div class="branch3">
+          <div class="node leaf">Answer your question<small>from the knowledge base</small></div>
+          <div class="node leaf">Open a ticket<small>and return the number</small></div>
+          <div class="node leaf">Show your tickets<small>your recent ones</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- M365 STACK -->
+<section class="section" id="stack">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:44px">
+      <span class="eyebrow">Why Microsoft 365</span>
+      <h2>It lives where employees already work</h2>
+      <p class="lead">Same login, same security, same trusted environment — no new app to learn, and company data stays inside Microsoft 365. Every layer is built on the Microsoft stack.</p>
+    </div>
+    <div class="stack-grid">
+      <div class="scard reveal"><div class="bd" style="background:#0b556a">CS</div><h3>Copilot Studio</h3><small>Agent design, prompt instructions, generative orchestration.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#0a6cf0">PA</div><h3>Power Automate</h3><small>Agent Flow that builds payloads and creates incidents in real time.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#742774">AI</div><h3>AI Builder</h3><small>LLM prompt that structures free text into incident fields.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#107c41">DV</div><h3>Dataverse</h3><small>Backs the solution — required for AI Builder &amp; the connector.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#0a6cf0">ID</div><h3>Entra ID</h3><small>Secure sign-in and role-based access control.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#5b5fc7">TM</div><h3>Teams</h3><small>The delivery surface — no leaving Microsoft 365.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#5c2d91">AI</div><h3>App Insights</h3><small>Telemetry across session, retrieval, resolution, ticketing.</small></div>
+      <div class="scard reveal"><div class="bd" style="background:#e6a200">BI</div><h3>Power BI</h3><small>KPI dashboard: resolution, deflection, hours saved.</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:42px">
+      <span class="eyebrow">Under the hood</span>
+      <h2>How it connects</h2>
+      <p class="lead">The agent connects securely to ServiceNow to read knowledge articles, create tickets, and recognize the user — for anyone who wants the technical view.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="arch">
+        <div class="col"><div class="box user">User</div></div>
+        <div class="link">→</div>
+        <div class="col"><div class="zone"><span class="ztitle">Copilot Studio · ITSM Agent</span>
+          <div class="box green">Agent orchestration</div>
+          <div class="box green">Knowledge source (RAG)</div>
+          <div class="box green">Create ticket + AI Builder</div></div></div>
+        <div class="link">→</div>
+        <div class="col"><div class="box conn">ServiceNow connector · OAuth2</div></div>
+        <div class="link">→</div>
+        <div class="col"><div class="zone"><span class="ztitle">ServiceNow</span>
+          <div class="box db">Knowledge Base</div>
+          <div class="box db">Incidents</div>
+          <div class="box db">sys_user</div></div></div>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--violet)"></span>User / Teams</span>
+        <span><span class="sw" style="background:var(--teal)"></span>Copilot Studio agent</span>
+        <span><span class="sw" style="background:var(--grad)"></span>OAuth2 connector</span>
+        <span><span class="sw" style="background:var(--blue)"></span>ServiceNow tables</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="section" id="security" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:42px">
+      <span class="eyebrow">Security</span>
+      <h2>Safe by design</h2>
+    </div>
+    <div class="grid g2" style="margin-bottom:18px">
+      <div class="card reveal"><div class="ico">🔐</div><h3>Your work account</h3><p>Only authorized employees can use it, signed in with their existing Microsoft work account.</p></div>
+      <div class="card reveal"><div class="ico">👥</div><h3>Your data only</h3><p>Access is controlled by role, and each person only ever sees their own tickets.</p></div>
+    </div>
+    <div class="callout reveal"><span class="ico">🛡️</span><p><b>No guessing.</b> The agent only answers from approved knowledge articles — no web search, no made-up advice — so every answer is trustworthy and traceable to a source.</p></div>
+  </div>
+</section>
+
+<!-- TELEMETRY -->
+<section class="section">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:34px">
+      <span class="eyebrow">Results</span>
+      <h2>Proven impact, not guesswork</h2>
+      <p class="lead">Every conversation is measured and shown on a live dashboard, so the value is real and visible.</p>
+    </div>
+    <div class="callout reveal" style="margin-bottom:30px">
+      <span class="ico">📊</span>
+      <p><b>Why measure?</b> It proves how much time and money the agent saves, shows where the knowledge base has gaps, and creates a feedback loop to keep making it better.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card kpi reveal"><div class="ico">📈</div><h3>Resolution rate</h3><p>Issues solved by the agent.</p></div>
+      <div class="card kpi reveal"><div class="ico">🎯</div><h3>Deflection quality</h3><p>Tickets avoided via KB grounding.</p></div>
+      <div class="card kpi reveal"><div class="ico">⏱️</div><h3>Hours saved</h3><p>Time recovered vs. manual logging.</p></div>
+      <div class="card kpi reveal"><div class="ico">🔔</div><h3>Tracked events</h3><p>Session · retrieval · resolution · ticketing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section class="section" id="delivery" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:42px">
+      <span class="eyebrow">How it ships</span>
+      <h2>Built and rolled out safely</h2>
+      <p class="lead">Everything is packaged together and tested at each stage before it goes live in Teams.</p>
+    </div>
+    <div class="pipeline reveal">
+      <div class="env"><div class="name">Dev</div><small>Sandbox · build &amp; iterate</small></div>
+      <div class="parrow">→</div>
+      <div class="env"><div class="name">UAT</div><small>Sandbox · validate</small></div>
+      <div class="parrow">→</div>
+      <div class="env"><div class="name">Prod</div><small>Production · publish to Teams</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="wrap">
+    <div class="cta reveal">
+      <h2>See the full build</h2>
+      <p>Topics, the Agent Flow, AI Builder prompt, diagrams, and setup — all in the repository.</p>
+      <div class="btnrow">
+        <a class="btn" href="https://github.com/lisekarimi/365-ITSM-Copilot" target="_blank" rel="noopener">⌥ View on GitHub</a>
+        <a class="btn ghost" href="https://github.com/lisekarimi/365-ITSM-Copilot/blob/main/ressources/agent-schema.md" target="_blank" rel="noopener">🗺️ Architecture &amp; flow diagrams</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MORE PROJECTS -->
+<section class="section" style="padding-top:0">
+  <div class="wrap center">
+    <span class="eyebrow">More from the maker</span>
+    <h2>Explore more agentic AI projects</h2>
+    <p class="lead" style="margin-bottom:28px">This is one of several end-to-end AI agent builds. See the rest of the portfolio.</p>
+    <a class="pfbtn" href="https://lisekarimi.com" target="_blank" rel="noopener">✨ Visit lisekarimi.com <span class="arw">→</span></a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="brand"><span class="logo">365</span> ITSM Copilot</div>
+        <p class="desc">An enterprise IT Service Desk agent — Microsoft Copilot Studio × ServiceNow, delivered in Teams.</p>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <h4>Project</h4>
+          <a href="https://github.com/lisekarimi/365-ITSM-Copilot" target="_blank" rel="noopener">GitHub repo</a>
+          <a href="https://github.com/lisekarimi/365-ITSM-Copilot/blob/main/ressources/agent-schema.md" target="_blank" rel="noopener">Schemas &amp; diagrams</a>
+        </div>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© <span id="yr">2026</span> · Built on Microsoft 365 &amp; Power Platform.</span>
+      <span>Copilot Studio · ServiceNow · Agentic AI</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(Math.min(i%4,3)*70)+'ms';io.observe(el)});
+  document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

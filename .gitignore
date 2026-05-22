@@ -5,6 +5,9 @@
 **/changetoken.txt
 **/filechangetrack.json
 
+# --- Mermaid diagram sources (rendered PNGs are committed instead) ---
+ressources/assets/.src/
+
 # --- Secrets / credentials ---
 *.env
 .env
