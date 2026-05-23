@@ -51,6 +51,12 @@ For the full step-by-step ServiceNow ↔ Copilot Studio configuration (OAuth app
 
 📄 [`ressources/servicenow-copilot-setup.pdf`](ressources/servicenow-copilot-setup.pdf)
 
+## Telemetry & analytics
+
+The agent emits Application Insights events (`KBResolved`, `TicketCreated`) to measure deflection, resolution rate, and hours saved — surfaced in a Power BI KPI dashboard.
+
+📊 [`ressources/powerbi-app-insights.md`](ressources/powerbi-app-insights.md) — connect App Insights to Power BI.
+
 ## Architecture & flows
 
 See [`ressources/agent-schema.md`](ressources/agent-schema.md) for the user journey and technical architecture diagrams.
