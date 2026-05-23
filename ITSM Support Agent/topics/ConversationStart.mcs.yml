@@ -361,16 +361,6 @@ beginDialog:
       id: sendMessage_M0LuhV
       activity:
         text:
-          - |-
-            👋 Hello {System.User.FirstName}! I'm {System.Bot.Name}, your IT Service Desk assistant powered by ServiceNow.
-
-
-            I can help you with:
-            - 🔍 Troubleshooting IT issues
-            - 🎫 Creating support tickets
-            - 📋 Viewing your recent tickets
-
-
-            How can I help you today?
+          - "👋 Hi {System.User.FirstName}! I'm {System.Bot.Name}. I can troubleshoot IT issues, open tickets, and check your recent ones. What's up?  "
         speak:
           - Hello and thank you for calling {System.Bot.Name}, powered by generative AI. How may I help you today?

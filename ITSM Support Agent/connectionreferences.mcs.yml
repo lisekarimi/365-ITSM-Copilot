@@ -1,4 +1,4 @@
-connectionReferences:
+﻿connectionReferences:
   - connectionReferenceLogicalName: lkar_ITSMSupportAgent.cr.TokjOwm3
     connectorId: /providers/Microsoft.PowerApps/apis/shared_service-now
   - connectionReferenceLogicalName: lkar_ITSMSupportAgent.shared_service-now.3a947c498ef149d7a9bd538ef4a89535

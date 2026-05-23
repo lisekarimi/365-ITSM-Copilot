@@ -20,6 +20,12 @@ beginDialog:
 
       flowId: 3ec05db2-fc55-f111-a825-7ced8d8399ab
 
+    - kind: LogCustomTelemetryEvent
+      id: cONAlk
+      displayName: TicketCreated telemetry event
+      eventName: TicketCreated
+      properties: =Topic.IncidentNumber
+
     - kind: SendActivity
       id: sendActivity_miOZRN
       activity: |-

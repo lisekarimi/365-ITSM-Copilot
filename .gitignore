@@ -8,6 +8,9 @@
 # --- Mermaid diagram sources (rendered PNGs are committed instead) ---
 ressources/assets/.src/
 
+# --- Power BI reports (embed cached data + tenant/account info) ---
+*.pbix
+
 # --- Secrets / credentials ---
 *.env
 .env

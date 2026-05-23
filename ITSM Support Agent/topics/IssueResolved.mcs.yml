@@ -1,0 +1,21 @@
+mcs.metadata:
+  componentName: " Issue Resolved"
+kind: AdaptiveDialog
+modelDescription: Logs a resolved session when the user confirms their IT issue was resolved through the knowledge base.
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent: {}
+  actions:
+    - kind: LogCustomTelemetryEvent
+      id: otUQno
+      displayName: KBResolved telemetry event
+      eventName: KBResolved
+      properties: =Global.UserIssueDescription
+
+    - kind: SendActivity
+      id: sendActivity_Jb7Zu4
+      activity: Glad I could help! Is there anything else I can assist you with?
+
+inputType: {}
+outputType: {}

@@ -19,10 +19,9 @@ instructions: |-
 
   (3) Answer using **only** information found in the ServiceNow knowledge base — do not use general knowledge. Guide the user through the solution. Go to step 4.
 
-  (4) Ask if the issue is resolved. If yes, ask if they need anything else. If no, go to step 5.
+  (4) Always explicitly ask the user: 'Was your issue resolved?' — do not assume resolution. Wait for a clear yes or no answer before proceeding. If yes, trigger {System.Bot.Components.Topics.'lkar_ITSMSupportAgent.topic.IssueResolved'.DisplayName} . If no, go to step 5.
 
-
-  (5) Tell the user the issue couldn't be resolved through the knowledge base and ask if they want a ticket created : if yes trigger  {System.Bot.Components.Topics.'lkar_ITSMSupportAgent.topic.CreateServiceNowTicket'.DisplayName} **, ** if no ask if they need anything else.
+  (5) Tell the user the issue couldn't be resolved through the knowledge base and ask if they want a ticket created : only trigger .{System.Bot.Components.Topics.'lkar_ITSMSupportAgent.topic.CreateServiceNowTicket'.DisplayName}if the user explicitly responds with yes, sure, create it, or similar clear confirmation**, ** if no ask if they need anything else.
 
   At any point, if the user asks to view, check, or list their tickets, immediately trigger the {System.Bot.Components.Topics.'lkar_ITSMSupportAgent.topic.GetRecentTickets'.DisplayName}   regardless of which step you are on.
 responseInstructions: |-
